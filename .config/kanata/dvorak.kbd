@@ -1,0 +1,82 @@
+(defcfg
+  process-unmapped-keys yes
+)
+
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft <     z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+(defalias
+  MOD_A (tap-hold 50 250 a lmet)
+  MOD_S (tap-hold 50 250 o lalt)
+  MOD_D (tap-hold 50 250 e lctl)
+  MOD_F (tap-hold 50 250 u lsft)
+                     
+  MOD_J (tap-hold 50 250 h rsft)
+  MOD_K (tap-hold 50 250 t rctl)
+  MOD_L (tap-hold 50 250 n ralt)
+  MOD_colon (tap-hold 50 250 s rmet)
+
+  MOD_CAPS bspc
+  MOD_LSFT esc
+  MOD_SPC  (tap-hold 50 250 spc (layer-while-held nav)) 
+  
+  MOD_EXTRA (tap-hold 50 250 S-4 (layer-while-held arrow))
+)
+
+(defalias
+  NAV_A 1
+  NAV_S (tap-hold 50 250 2 lalt)
+  NAV_D (tap-hold 50 250 3 lctl)
+  NAV_F (tap-hold 50 250 4 lsft)
+  NAV_G 5
+  NAV_H 6
+  NAV_J (tap-hold 50 250 7 rsft)
+  NAV_K (tap-hold 50 250 8 rctl)
+  NAV_L (tap-hold 50 250 9 ralt)
+  NAV_colon 0
+  NAV_QUOTE [ 
+  NAV_SLASH ]
+
+  NAV_TAB grv
+)
+
+(defalias
+  DOUBLE_I (tap-dance 200 (c ret))
+)
+
+(defalias
+  ARROW_H left 
+  ARROW_J down
+  ARROW_K up
+  ARROW_L right
+)
+
+(deflayer dvorak
+  grv  1    2    3    4    5    6    7    8    9    0    [    ]    bspc
+  tab  '    ,    .    p    y    f    g    @DOUBLE_I    r    l    /    =    \
+  @MOD_CAPS @MOD_A    @MOD_S    @MOD_D    @MOD_F    i    d    @MOD_J    @MOD_K    @MOD_L    @MOD_colon    -    ret
+  @MOD_LSFT @MOD_EXTRA    ;    q    j    k    x    b    m    w    v    z    rsft
+  lctl lmet lalt           @MOD_SPC            ralt rmet rctl
+)
+
+(deflayer nav
+  _  _    _    _    _    _    _    _    _    _    _    _    _    _
+  @NAV_TAB  _    _    _    _    _    _    _    @DOUBLE_I    _    _    _    _    @NAV_SLASH
+  @MOD_CAPS @NAV_A    @NAV_S    @NAV_D    @NAV_F    @NAV_G    @NAV_H    @NAV_J    @NAV_K    @NAV_L    @NAV_colon    @NAV_QUOTE    _
+  @MOD_LSFT _    _    _    _    _    _    _    _    _    _    _  _
+  _ _ _           _            _ _ _
+)
+
+(deflayer arrow
+  _  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _  _    _    _    _    _    _    _    _    _    _    _    _   _ 
+  _ _    _    _    _    _    @ARROW_H    @ARROW_J    @ARROW_K    @ARROW_L    _    _    _
+  _ _  _   _    _    _    _    _    _    _    _    _  _
+  _ _ _           _            _ _ _
+
+)
