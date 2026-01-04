@@ -1,0 +1,14 @@
+
+
+
+completions/
+conf.d/
+functions/
+.zcompdump
+.zcompdump-archThinkpad-5.9
+.zcompdump-archThinkpad-5.9.archThinkpad.25625
+.zcompdump-archThinkpad-5.9.zwc
+.zsh_history
+.zshenv
+plugin.zsh
+prompt.zsh
