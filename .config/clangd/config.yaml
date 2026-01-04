@@ -1,0 +1,54 @@
+CompileFlags:
+  Add:
+    - -Wall
+    - -Wextra
+    - -Wpedantic
+    - -Wno-unused-parameter
+    - -Wunreachable-code 
+
+
+Diagnostics:
+  ClangTidy:
+    Add: ["*"]
+    Remove:
+      - modernize-*
+      - cppcoreguidelines-*
+      - llvm-*
+      - hicpp-*
+      - llvmlibc-* 
+      - readability-magic-numbers
+      - readability-identifier-length
+      - readability-identifier-naming
+      - readability-function-cognitive-complexity 
+      - readability-else-after-return
+      - misc-non-private-member-variables-in-classes
+      - misc-no-recursion
+      - misc-use-internal-linkage
+      - altera-unroll-loops
+      - cert-flp30-c 
+      - cert-err33-c
+      - android-cloexec-accept
+      - boost-use-ranges
+      - bugprone-easily-swappable-parameters
+      - fuchsia-default-arguments-*
+      - google-runtime-int
+      - google-objc-function-naming
+      - google-readability-todo
+    CheckOptions:
+      bugprone-argument-comment.StrictMode: false
+
+Hover:
+  ShowAKA: true
+
+InlayHints:
+  Enabled: true
+  ParameterNames: true
+  DeducedTypes: true
+  Designators: true
+  BlockEnd: true
+
+Completion:
+  AllScopes: true
+
+
+
