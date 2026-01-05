@@ -81,9 +81,16 @@ return {
         { "]]",          function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
         { "[[",          function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
         { "<leader>bt",  function() Snacks.terminal(nil, { win = { position = "bottom", height = 0.5 } }) end, desc = "Terminal (bottom)" },
-        { "<c-/>",       function() Snacks.terminal(nil, {
+        { "<leader>ft",  function() Snacks.terminal(nil, {
+                            cwd = '.', -- TODO: how to set?
                             win = { style = "terminal", position = "float", backdrop = 60, border = "rounded", width = 0.5, height = 0.7 } })
-                         end, desc = "Toggle Floating Terminal" },
+                         end, desc = "Toggle Floating Terminal (cwd)"
+        },
+        { "<leader>fT",  function() Snacks.terminal(nil, {
+                            cwd = require("utils.root").get(),
+                            win = { style = "terminal", position = "float", backdrop = 60, border = "rounded", width = 0.5, height = 0.7 } })
+                         end, desc = "Toggle Floating Terminal (Root)"
+        }
     },
 
 
@@ -102,6 +109,7 @@ return {
         words = { enabled = true },
         bigfile = { enabled = true },
         indent = { enabled = true },
+        scroll = { enabled = true },
         input = { enabled = true },
         quickfile = { enabled = true },
         scope = { enabled = true },
