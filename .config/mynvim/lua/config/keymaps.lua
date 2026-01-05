@@ -30,5 +30,8 @@ vim.keymap.set("n", "<C-l>", "<C-w>l")
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 
--- buffer
-vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+
+-- terminal
+--vim.keymap.set({'n', 'v'}, "<C-/>", Snacks.terminal(), { desc = "Open Floating Terminal"})
+
+
