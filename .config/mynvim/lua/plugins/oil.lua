@@ -1,14 +1,15 @@
 
 return {
+
     {
         "stevearc/oil.nvim",
         lazy = false,
         dependencies = {
-            { "nvim-tree/nvim-web-devicons", opts = {} },
+            "nvim-tree/nvim-web-devicons",
         },
         opts = {
             default_file_explorer = true,
-            columns = { "git" ,"icon" },
+            columns = { "git_status" ,"icon" },
             view_options = {
                 show_hidden = true,
             },
@@ -101,37 +102,9 @@ return {
         },
     },
     {
-        "refractalize/oil-git-status.nvim",
+    "benomahony/oil-git.nvim",
         dependencies = { "stevearc/oil.nvim" },
-        config = function()
-            require('oil-git-status').setup({
-                show_ignored = true,  -- show files that match gitignore with !!
-                 index = {
-                    ["!"] = "!",
-                    ["?"] = "?",
-                    ["A"] = "A",
-                    ["C"] = "C",
-                    ["D"] = "D",
-                    ["M"] = "M",
-                    ["R"] = "R",
-                    ["T"] = "T",
-                    ["U"] = "U",
-                    [" "] = " ",
-                },
-                working_tree = {
-                    ["!"] = "!",
-                    ["?"] = "?",
-                    ["A"] = "A",
-                    ["C"] = "C",
-                    ["D"] = "D",
-                    ["M"] = "M",
-                    ["R"] = "R",
-                    ["T"] = "T",
-                    ["U"] = "U",
-                    [" "] = " ",
-                },
-            })
-        end,
+        -- No opts or config needed! Works automatically
     }
 }
 
