@@ -56,7 +56,7 @@ alias dots='/usr/bin/git --git-dir=$HOME/Documents/dotfiles/ --work-tree=$HOME'
 alias lazydots='lazygit --git-dir=$HOME/Documents/dotfiles --work-tree=$HOME'
 
 
-# ====== TMUX FUNCTIONS ======
+# ====== TMUX ======
 
 # Create new tmux session (requires session name)
 tn() {
@@ -110,5 +110,61 @@ if [[ -n "$TMUX" ]]; then
     # Initial cursor
     echo -ne '\e[5 q'
 fi
+
+
+
+# ===== EZA =====
+
+export EZA_THEME=$HOME/.config/eza/theme.yml
+
+alias ls='eza --icons'
+alias ll='eza -l --icons --git --total-size'
+alias la='eza -la --icons --git --total-size'
+# sorting helpers
+alias lm='eza -l --sort=modified --icons --git --total-size'
+alias lz='eza -l --sort=size --icons --git --total-size'
+alias lx='eza -l --sort=extension --icons --git --total-size'
+# git-focused
+alias lg='eza -l --git --git-ignore --git-repos --icons --total-size'
+# tree + files
+lt() {
+    if [[ $# -eq 0 ]]; then
+        eza -lT --icons --git --total-size -L 1
+    else
+        eza -lT --icons --git --total-size -L "$@"
+    fi
+}
+# tree + git focused
+ltg() {
+    if [[ $# -eq 0 ]]; then
+        eza -lT --icons --git --git-ignore --git-repos --total-size -L 1
+    else
+        eza -lT --icons --git --git-ignore --git-repos --total-size -L "$@"
+    fi
+}
+# tree + files + all
+lta() {
+    if [[ $# -eq 0 ]]; then
+        eza -laT --icons --git --total-size -L 1
+    else
+        eza -laT --icons --git --total-size -L "$@"
+    fi
+}
+# classic tree replacement
+tree() {
+    eza --tree --icons "$@"
+}
+
+
+# ===== FZF =====
+
+# fuzzy explore directories with tree preview
+fe() {
+    local dir
+    dir=$(fd --type d --hidden --follow --exclude .git \
+        | fzf --preview 'eza --tree --level=3 --icons --color=always {}') || return
+    cd "$dir"
+}
+
 
 

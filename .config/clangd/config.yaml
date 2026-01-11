@@ -34,6 +34,7 @@ Diagnostics:
       - google-runtime-int
       - google-objc-function-naming
       - google-readability-todo
+      - concurrency-mt-unsafe
     CheckOptions:
       bugprone-argument-comment.StrictMode: false
 
