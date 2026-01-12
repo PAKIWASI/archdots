@@ -51,35 +51,176 @@ return {
       "hrsh7th/cmp-nvim-lsp",
     },
 
-    -- LazyVim-style key declarations
-    keys = {
-      { "gd", vim.lsp.buf.definition, desc = "Goto Definition" },
-      { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
-      { "gr", vim.lsp.buf.references, desc = "References" },
-      { "gi", vim.lsp.buf.implementation, desc = "Goto Implementation" },
-      { "gy", vim.lsp.buf.type_definition, desc = "Goto Type Definition" },
+    -- Native LSP Configuration
+    {
+        'neovim/nvim-lspconfig',
+        dependencies = {
+            'williamboman/mason.nvim',
+            'williamboman/mason-lspconfig.nvim',
+            'hrsh7th/cmp-nvim-lsp',
+        },
+        config = function()
+            -- Diagnostic configuration
+            vim.diagnostic.config({
+                virtual_text = true,
+                signs = true,
+                underline = true,
+                update_in_insert = false,
+                severity_sort = true,
+                float = {
+                    border = "rounded",
+                    source = "if_many",
+                },
+            })
 
-      { "K", vim.lsp.buf.hover, desc = "Hover" },
-      { "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
+            -- Diagnostic signs
+            local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+            for type, icon in pairs(signs) do
+                local hl = "DiagnosticSign" .. type
+                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+            end
 
-      { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action" },
-      { "<leader>cr", vim.lsp.buf.rename, desc = "Rename" },
+            -- Enhanced capabilities with nvim-cmp
+            local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-      { "[d", vim.diagnostic.goto_prev, desc = "Prev Diagnostic" },
-      { "]d", vim.diagnostic.goto_next, desc = "Next Diagnostic" },
-      { "<leader>cd", vim.diagnostic.open_float, desc = "Line Diagnostics" },
+            -- On attach function
+            local on_attach = function(client, bufnr)
+                local function map(mode, lhs, rhs, desc)
+                    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
+                end
 
-      { "<leader>cf", function()
-          vim.lsp.buf.format({ async = true })
+                -- LSP keybindings (LazyVim style)
+                map('n', 'gd', function() require('trouble').toggle('lsp_definitions') end, 'Goto Definition')
+                map('n', 'gr', function() require('trouble').toggle('lsp_references') end, 'References')
+                map('n', 'gI', function() require('trouble').toggle('lsp_implementations') end, 'Goto Implementation')
+                map('n', 'gy', function() require('trouble').toggle('lsp_type_definitions') end, 'Goto Type Definition')
+                map('n', 'gD', vim.lsp.buf.declaration, 'Goto Declaration')
+
+                map('n', 'K', vim.lsp.buf.hover, 'Hover')
+                map('n', 'gK', vim.lsp.buf.signature_help, 'Signature Help')
+                map('i', '<C-k>', vim.lsp.buf.signature_help, 'Signature Help')
+
+                -- Code actions
+                map({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, 'Code Action')
+                map('n', '<leader>cA', function()
+                    vim.lsp.buf.code_action({
+                        context = {
+                            only = { 'source' },
+                            diagnostics = {},
+                        },
+                    })
+                end, 'Source Action')
+
+                -- Rename
+                map('n', '<leader>cr', vim.lsp.buf.rename, 'Rename')
+
+                -- Format
+                map({ 'n', 'v' }, '<leader>cf', function()
+                    vim.lsp.buf.format({ async = true })
+                end, 'Format')
+
+                -- Diagnostics with vim.diagnostic.jump
+                map('n', '<leader>cd', vim.diagnostic.open_float, 'Line Diagnostics')
+                map('n', ']d', function()
+                    vim.diagnostic.jump({ count = 1, float = true })
+                end, 'Next Diagnostic')
+                map('n', '[d', function()
+                    vim.diagnostic.jump({ count = -1, float = true })
+                end, 'Prev Diagnostic')
+                map('n', ']e', function()
+                    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
+                end, 'Next Error')
+                map('n', '[e', function()
+                    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
+                end, 'Prev Error')
+                map('n', ']w', function()
+                    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN })
+                end, 'Next Warning')
+                map('n', '[w', function()
+                    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN })
+                end, 'Prev Warning')
+
+
+                -- Highlight symbol under cursor
+                if client.supports_method("textDocument/documentHighlight") then
+                    local highlight_group = vim.api.nvim_create_augroup('lsp_document_highlight', { clear = false })
+                    vim.api.nvim_clear_autocmds({ buffer = bufnr, group = highlight_group })
+                    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                        buffer = bufnr,
+                        group = highlight_group,
+                        callback = vim.lsp.buf.document_highlight,
+                    })
+                    vim.api.nvim_create_autocmd("CursorMoved", {
+                        buffer = bufnr,
+                        group = highlight_group,
+                        callback = vim.lsp.buf.clear_references,
+                    })
+                end
+            end
+
+            -- Set default config for all servers
+            vim.lsp.config('*', {
+                capabilities = capabilities,
+            })
+
+            -- Load individual server configs from lsp/ directory
+            local lsp_dir = vim.fn.stdpath("config") .. "/lua/lsp"
+
+            -- Check if directory exists
+            if vim.fn.isdirectory(lsp_dir) == 1 then
+            local handle = vim.loop.fs_scandir(lsp_dir)
+                if handle then
+                    while true do
+                    local name, type = vim.loop.fs_scandir_next(handle)
+                    if not name then break end
+
+                        if type == 'file' and name:match('%.lua$') then
+                            local server_name = name:gsub("%.lua$", "")
+                            local ok, server_config = pcall(require, "lsp." .. server_name)
+
+                            if ok then
+                            -- Get default config
+                            local default_config = vim.lsp.config[server_name] or {}
+
+                            -- Merge custom config with default config and capabilities
+                            local merged_config = vim.tbl_deep_extend('force', {
+                                capabilities = capabilities,
+                            }, default_config, server_config)
+
+                            -- Set the merged config
+                            vim.lsp.config[server_name] = merged_config
+                            end
+                        end
+                    end
+                end
+            end
+
+            -- Mason LSPConfig setup
+            local mason_lspconfig = require('mason-lspconfig')
+
+            -- Ensure these servers are installed
+            mason_lspconfig.setup({
+                ensure_installed = {
+                    'lua_ls',
+                },
+            })
+
+            -- LspAttach autocmd for keybindings
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
+                callback = function(event)
+                    local client = vim.lsp.get_client_by_id(event.data.client_id)
+                    if client then
+                        on_attach(client, event.buf)
+                    end
+                end,
+            })
+
+            -- Enable LSP servers (all from ensure_installed)
+            vim.lsp.enable({
+                'lua_ls',
+            })
         end,
-        desc = "Format Buffer",
-      },
-
-      -- Trouble
-      { "<leader>xx", function() require("trouble").toggle() end, desc = "Trouble" },
-      { "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end, desc = "Workspace Diagnostics" },
-      { "<leader>xd", function() require("trouble").toggle("document_diagnostics") end, desc = "Document Diagnostics" },
-      { "gR", function() require("trouble").toggle("lsp_references") end, desc = "LSP References" },
     },
 
     config = function()
@@ -125,19 +266,10 @@ return {
           })
         end,
 
-        ["lua_ls"] = function()
-          lspconfig.lua_ls.setup({
-            on_attach = on_attach,
-            capabilities = capabilities,
-            settings = {
-              Lua = {
-                diagnostics = { globals = { "vim" } },
-                workspace = {
-                  checkThirdParty = false,
-                  library = vim.api.nvim_get_runtime_file("", true),
-                },
-                telemetry = { enable = false },
-              },
+            {
+                '<leader>xQ',
+                '<cmd>Trouble qflist toggle<cr>',
+                desc = 'Quickfix List (Trouble)',
             },
           })
         end,
@@ -178,5 +310,4 @@ return {
       auto_open = false,
       use_diagnostic_signs = true,
     },
-  },
 }

@@ -1,5 +1,3 @@
-
-
 return {
 
     -- statusline (lua line)
@@ -7,7 +5,7 @@ return {
         'nvim-lualine/lualine.nvim',
         dependencies = {
             'nvim-tree/nvim-web-devicons',
-            'lewis6991/gitsigns.nvim',  -- Required for git diff
+            'lewis6991/gitsigns.nvim', -- Required for git diff
         },
         opts = {
             options = {
@@ -37,7 +35,7 @@ return {
                     'filetype',
                     {
                         'filename',
-                        path = 1,  -- Relative path
+                        path = 1, -- Relative path
                         symbols = {
                             modified = '[+]',
                             readonly = '[-]',
@@ -73,32 +71,33 @@ return {
             "nvim-tree/nvim-web-devicons",
         },
         keys = {
-            { "<S-h>", "<cmd>BufferLineCyclePrev<CR>", desc = "Prev buffer" },
-            { "<S-l>", "<cmd>BufferLineCycleNext<CR>", desc = "Next buffer" },
+            { "<S-h>",      "<cmd>BufferLineCyclePrev<CR>",  desc = "Prev buffer" },
+            { "<S-l>",      "<cmd>BufferLineCycleNext<CR>",  desc = "Next buffer" },
             { "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
-            { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
-            { "[b", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
-            { "]b", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+            { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>",  desc = "Delete Buffers to the Left" },
+            { "[b",         "<cmd>BufferLineMovePrev<cr>",   desc = "Move buffer prev" },
+            { "]b",         "<cmd>BufferLineMoveNext<cr>",   desc = "Move buffer next" },
         },
         opts = {
             options = {
-            diagnostics = "nvim_lsp",
+                diagnostics = "nvim_lsp",
 
-            show_close_icon = false,
-            show_buffer_close_icons = false,
+                show_close_icon = false,
+                show_buffer_close_icons = false,
 
-            always_show_bufferline = false,
+                always_show_bufferline = false,
 
-            separator_style = "slope",
+                separator_style = "slope",
 
-            offsets = {
-                {
-                filetype = "neo-tree",
-                text = "File Explorer",
-                highlight = "Directory",
-                text_align = "left",
+                offsets = {
+                    {
+                        filetype = "oil",
+                        text = "File Explorer",
+                        highlight = "Directory",
+                        text_align = "left",
+                        separator = true,
+                    },
                 },
-            },
             },
         },
         config = function(_, opts)
@@ -112,7 +111,7 @@ return {
         event = "VeryLazy",
         opts_extend = { "spec" },
         opts = {
-            preset = "helix",  -- or "modern" 
+            preset = "helix", -- or "modern"
             defaults = {},
             spec = {
                 {
@@ -125,10 +124,10 @@ return {
                     { "<leader>s", group = "search" },
                     { "<leader>u", group = "ui" },
                     { "<leader>x", group = "diagnostics/quickfix" },
-                    { "[", group = "prev" },
-                    { "]", group = "next" },
-                    { "g", group = "goto" },
-                    { "z", group = "fold" },
+                    { "[",         group = "prev" },
+                    { "]",         group = "next" },
+                    { "g",         group = "goto" },
+                    { "z",         group = "fold" },
                     {
                         "<leader>b",
                         group = "buffer",
@@ -168,7 +167,4 @@ return {
             wk.setup(opts)
         end,
     }
-
 }
-
-
