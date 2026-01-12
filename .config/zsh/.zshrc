@@ -118,36 +118,38 @@ fi
 export EZA_THEME=$HOME/.config/eza/theme.yml
 
 alias ls='eza --icons'
-alias ll='eza -l --icons --git --total-size'
-alias la='eza -la --icons --git --total-size'
+alias ll='eza -l --icons --git'
+alias la='eza -la --icons --git'
+alias lls='eza -l --icons --git --total-size'
+alias las='eza -la --icons --git --total-size'
 # sorting helpers
-alias lm='eza -l --sort=modified --icons --git --total-size'
-alias lz='eza -l --sort=size --icons --git --total-size'
-alias lx='eza -l --sort=extension --icons --git --total-size'
+alias lm='eza -l --sort=modified --icons --git'
+alias lz='eza -l --sort=size --icons --git'
+alias lx='eza -l --sort=extension --icons --git'
 # git-focused
-alias lg='eza -l --git --git-ignore --git-repos --icons --total-size'
+alias lg='eza -l --git --git-ignore --git-repos --icons'
 # tree + files
 lt() {
     if [[ $# -eq 0 ]]; then
-        eza -lT --icons --git --total-size -L 1
+        eza -lT --icons --git -L 1
     else
-        eza -lT --icons --git --total-size -L "$@"
+        eza -lT --icons --git -L "$@"
     fi
 }
 # tree + git focused
 ltg() {
     if [[ $# -eq 0 ]]; then
-        eza -lT --icons --git --git-ignore --git-repos --total-size -L 1
+        eza -lT --icons --git --git-ignore --git-repos -L 1
     else
-        eza -lT --icons --git --git-ignore --git-repos --total-size -L "$@"
+        eza -lT --icons --git --git-ignore --git-repos -L "$@"
     fi
 }
 # tree + files + all
 lta() {
     if [[ $# -eq 0 ]]; then
-        eza -laT --icons --git --total-size -L 1
+        eza -laT --icons --git -L 1
     else
-        eza -laT --icons --git --total-size -L "$@"
+        eza -laT --icons --git -L "$@"
     fi
 }
 # classic tree replacement
