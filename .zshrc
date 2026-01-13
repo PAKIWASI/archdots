@@ -46,12 +46,18 @@ bindkey -v
 export KEYTIMEOUT=1
 
 # ==================================================
-# COMPLETION SYSTEM
+# COMPLETION SYSTEM (CORE)
 # ==================================================
 autoload -Uz compinit
+
+# zsh-completions (Arch path)
+if [ -d /usr/share/zsh/plugins/zsh-completions ]; then
+  fpath=(/usr/share/zsh/plugins/zsh-completions $fpath)
+fi
+
 compinit
 
-# general completion behavior
+# completion behavior
 setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 setopt AUTO_LIST
@@ -65,23 +71,11 @@ zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 
-# matching (case-insensitive + smart separators)
+# matching: case-insensitive + smart separators
 zstyle ':completion:*' matcher-list \
   'm:{a-zA-Z}={A-Za-z}' \
   'r:|[._-]=* r:|=*' \
   'l:|=* r:|=*'
-
-# ==================================================
-# BETTER HISTORY SEARCH (↑ ↓)
-# ==================================================
-autoload -Uz up-line-or-beginning-search
-autoload -Uz down-line-or-beginning-search
-
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-
-bindkey '^[[A' up-line-or-beginning-search
-bindkey '^[[B' down-line-or-beginning-search
 
 # ==================================================
 # DIRECTORY STACK
@@ -106,42 +100,60 @@ if command -v zoxide >/dev/null; then
 fi
 
 # ==================================================
-# FZF
+# FZF (CORE CONFIG)
 # ==================================================
-autoload -Uz fzf-history-widget
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_DEFAULT_OPTS="
   --height=40%
   --layout=reverse
   --border
+  --prompt='❯ '
   --preview-window=right:60%
 "
 
-# fuzzy cd with tree preview
-fe() {
-  local dir
-  dir=$(fd --type d --hidden --follow --exclude .git \
-    | fzf --preview 'eza --tree --level=3 --icons --color=always {}') || return
-  cd "$dir"
+# ==================================================
+# FZF CTRL-R HISTORY SEARCH (REAL, ZSH-NATIVE)
+# ==================================================
+fzf-history() {
+  local cmd
+  cmd=$(
+    fc -rl 1 |
+    sed 's/^[[:space:]]*[0-9]\+[[:space:]]*//' |
+    fzf --tac --no-sort --query="$LBUFFER" \
+        --prompt='history ❯ '
+  ) || return
+
+  LBUFFER="$cmd"
 }
+zle -N fzf-history
+bindkey '^R' fzf-history
 
-# use zsh history
-export FZF_CTRL_R_OPTS="
-  --height=40%
-  --layout=reverse
-  --border
-  --prompt='history ❯ '
-  --preview 'echo {}'
-"
+# ==================================================
+# HISTORY SUBSTRING SEARCH (↑ ↓)
+# ==================================================
+if [ -f /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
+  source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+fi
 
-# bind Ctrl-R
-bindkey '^R' fzf-history-widget
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# ==================================================
+# AUTOSUGGESTIONS
+# ==================================================
+if [ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+bindkey '^ ' autosuggest-accept
 
 # ==================================================
 # ALIASES
 # ==================================================
 
-# ----- pacman -----
+# pacman
 alias sp='sudo pacman'
 alias sps='sudo pacman -S'
 alias spss='sudo pacman -Ss'
@@ -153,77 +165,68 @@ alias pacorphs='pacman -Qtdq'
 alias pacorphs-rm='sudo pacman -Rns $(pacman -Qtdq)'
 alias pacforeign='pacman -Qqm'
 
-# ----- directory -----
+# directories
 alias ..='cd ..'
 alias ...='cd ../..'
 alias .3='cd ../../..'
 alias mkdir='mkdir -p'
 
-# ----- applications -----
+# applications
+alias pic='kitty icat'
+alias camera='guvcview'
+alias f='fastfetch --logo-type kitty-icat --logo-width 35'
 alias ff='fastfetch -l small'
 alias n='nvim'
+alias mynvim='NVIM_APPNAME=mynvim nvim'
 
-# ----- build -----
+# build
 alias C='cmake -G Ninja -S . -B build/'
 alias b='ninja -C build'
 alias x='./build/main'
 alias bx='ninja -C build && ./build/main'
 
-# ----- misc -----
+# misc
 alias c='clear'
+alias zin='hydectl zoom --in --intensity'
+alias zout='hydectl zoom --out --intensity'
+alias zreset='hydectl zoom --reset'
 
-
+# dotfiles
+alias dots='/usr/bin/git --git-dir=$HOME/Documents/dotfiles/ --work-tree=$HOME'
+alias lazydots='lazygit --git-dir=$HOME/Documents/dotfiles --work-tree=$HOME'
 
 # safety
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias rm='rm -iv'
 
-# reload
 alias sz='source ~/.config/zsh/.zshrc'
 
 # ==================================================
 # TMUX HELPERS
 # ==================================================
 tn() {
-  if [ $# -eq 0 ]; then
-    echo "Usage: tn <session-name>"
-  else
-    tmux new-session -s "$1"
-  fi
+  [[ $# -eq 0 ]] && echo "Usage: tn <session>" || tmux new-session -s "$1"
 }
 
 ta() {
-  if [ $# -eq 0 ]; then
-    tmux list-sessions
-    echo "Usage: ta <session-name>"
-  else
-    tmux attach-session -t "$1"
-  fi
+  [[ $# -eq 0 ]] && tmux list-sessions || tmux attach-session -t "$1"
 }
 
 alias tl='tmux list-sessions'
 alias tks='tmux kill-session'
 alias tkS='tmux kill-server'
 
-# ----- tmux cursor fix -----
+# tmux cursor fix
 if [[ -n "$TMUX" ]]; then
-  function _tmux_cursor_fix() {
-    echo -ne '\e[5 q'
-  }
+  _tmux_cursor_fix() { echo -ne '\e[5 q'; }
   precmd_functions+=(_tmux_cursor_fix)
 
-  function zle-keymap-select() {
-    if [[ $KEYMAP == vicmd ]]; then
-      echo -ne '\e[1 q'
-    else
-      echo -ne '\e[5 q'
-    fi
+  zle-keymap-select() {
+    [[ $KEYMAP == vicmd ]] && echo -ne '\e[1 q' || echo -ne '\e[5 q'
     zle reset-prompt
   }
   zle -N zle-keymap-select
-
-  echo -ne '\e[5 q'
 fi
 
 # ==================================================
@@ -246,6 +249,11 @@ lt()  { eza -lT  --icons --git -L "${1:-1}"; }
 ltg() { eza -lT  --icons --git --git-ignore --git-repos -L "${1:-1}"; }
 lta() { eza -laT --icons --git -L "${1:-1}"; }
 
-tree() {
-  eza --tree --icons "$@"
-}
+tree() { eza --tree --icons "$@"; }
+
+# ==================================================
+# SYNTAX HIGHLIGHTING (MUST BE LAST)
+# ==================================================
+if [ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
