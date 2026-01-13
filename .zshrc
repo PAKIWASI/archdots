@@ -1,47 +1,95 @@
-# ==================================================
-# ZSH CONFIG — wasi
-# Location: ~/.config/zsh/.zshrc
-# ==================================================
 
-# ---------- XDG ----------
+# ==================================================
+# XDG BASE DIRS
+# ==================================================
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-# ---------- Editor ----------
+# ==================================================
+# EDITOR / ENV
+# ==================================================
 export EDITOR="nvim"
 export VISUAL="nvim"
+export PAGER="less"
 
-# ---------- PATH ----------
+# ==================================================
+# PATH
+# ==================================================
 export PATH="$HOME/.local/bin:$PATH"
 
-# ---------- History ----------
+# ==================================================
+# HISTORY
+# ==================================================
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=100000
 SAVEHIST=100000
 
+setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 setopt EXTENDED_HISTORY
+setopt HIST_VERIFY
 
-# ---------- Zsh behavior ----------
+# ==================================================
+# CORE ZSH BEHAVIOR
+# ==================================================
 setopt AUTO_CD
 setopt NO_BEEP
+setopt INTERACTIVE_COMMENTS
+setopt NO_CLOBBER
+
 bindkey -v
 export KEYTIMEOUT=1
 
 # ==================================================
-# COMPLETION
+# COMPLETION SYSTEM
 # ==================================================
 autoload -Uz compinit
 compinit
 
+# general completion behavior
+setopt COMPLETE_IN_WORD
+setopt ALWAYS_TO_END
+setopt AUTO_LIST
+setopt AUTO_MENU
+setopt NUMERIC_GLOB_SORT
+setopt NO_CASE_GLOB
+
+# completion styles
 zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
+
+# matching (case-insensitive + smart separators)
+zstyle ':completion:*' matcher-list \
+  'm:{a-zA-Z}={A-Za-z}' \
+  'r:|[._-]=* r:|=*' \
+  'l:|=* r:|=*'
+
+# ==================================================
+# BETTER HISTORY SEARCH (↑ ↓)
+# ==================================================
+autoload -Uz up-line-or-beginning-search
+autoload -Uz down-line-or-beginning-search
+
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+
+# ==================================================
+# DIRECTORY STACK
+# ==================================================
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT
+alias d='dirs -v'
 
 # ==================================================
 # STARSHIP PROMPT
@@ -56,6 +104,38 @@ fi
 if command -v zoxide >/dev/null; then
   eval "$(zoxide init zsh)"
 fi
+
+# ==================================================
+# FZF
+# ==================================================
+autoload -Uz fzf-history-widget
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_DEFAULT_OPTS="
+  --height=40%
+  --layout=reverse
+  --border
+  --preview-window=right:60%
+"
+
+# fuzzy cd with tree preview
+fe() {
+  local dir
+  dir=$(fd --type d --hidden --follow --exclude .git \
+    | fzf --preview 'eza --tree --level=3 --icons --color=always {}') || return
+  cd "$dir"
+}
+
+# use zsh history
+export FZF_CTRL_R_OPTS="
+  --height=40%
+  --layout=reverse
+  --border
+  --prompt='history ❯ '
+  --preview 'echo {}'
+"
+
+# bind Ctrl-R
+bindkey '^R' fzf-history-widget
 
 # ==================================================
 # ALIASES
@@ -80,11 +160,10 @@ alias .3='cd ../../..'
 alias mkdir='mkdir -p'
 
 # ----- applications -----
-alias pic='kitty icat'
-alias camera='guvcview'
-alias f='fastfetch --logo-type kitty-icat --logo-width 35'
 alias ff='fastfetch -l small'
 alias n='nvim'
+
+# ----- build -----
 alias C='cmake -G Ninja -S . -B build/'
 alias b='ninja -C build'
 alias x='./build/main'
@@ -92,24 +171,20 @@ alias bx='ninja -C build && ./build/main'
 
 # ----- misc -----
 alias c='clear'
-alias zin='hydectl zoom --in --intensity'
-alias zout='hydectl zoom --out --intensity'
-alias zreset='hydectl zoom --reset'
-alias mynvim='NVIM_APPNAME=mynvim nvim'
 
-# dotfiles (bare repo)
-alias dots='/usr/bin/git --git-dir=$HOME/Documents/dotfiles/ --work-tree=$HOME'
-alias lazydots='lazygit --git-dir=$HOME/Documents/dotfiles --work-tree=$HOME'
+
 
 # safety
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias rm='rm -iv'
 
+# reload
+alias sz='source ~/.config/zsh/.zshrc'
+
 # ==================================================
 # TMUX HELPERS
 # ==================================================
-
 tn() {
   if [ $# -eq 0 ]; then
     echo "Usage: tn <session-name>"
@@ -167,28 +242,10 @@ alias lz='eza -l --sort=size --icons --git'
 alias lx='eza -l --sort=extension --icons --git'
 alias lg='eza -l --git --git-ignore --git-repos --icons'
 
-lt() {
-  eza -lT --icons --git -L "${1:-1}"
-}
-
-ltg() {
-  eza -lT --icons --git --git-ignore --git-repos -L "${1:-1}"
-}
-
-lta() {
-  eza -laT --icons --git -L "${1:-1}"
-}
+lt()  { eza -lT  --icons --git -L "${1:-1}"; }
+ltg() { eza -lT  --icons --git --git-ignore --git-repos -L "${1:-1}"; }
+lta() { eza -laT --icons --git -L "${1:-1}"; }
 
 tree() {
   eza --tree --icons "$@"
-}
-
-# ==================================================
-# FZF
-# ==================================================
-fe() {
-  local dir
-  dir=$(fd --type d --hidden --follow --exclude .git \
-    | fzf --preview 'eza --tree --level=3 --icons --color=always {}') || return
-  cd "$dir"
 }
