@@ -65,6 +65,7 @@ return {
             },
             { "<leader>of", "<cmd>Oil --float<cr>", desc = "Oil (float)" },
             { "<leader>oq", "<cmd>bd<cr>",          desc = "Close Oil" },
+            { "<leader>ow", "<cmd>w<cr>",          desc = "Write Changes" },
             {
                 "<leader>E",
                 function()
@@ -102,15 +103,21 @@ return {
             },
         },
     },
-    --[[
-    {
-        "malewicz1337/oil-git.nvim",
-        dependencies = { "stevearc/oil.nvim" }
-    }
-    --]]
+    -- TODO: how to modify symbols?
     {
         "FerretDetective/oil-git-signs.nvim",
+        ft = "oil", -- lazy-load for oil buffers
         dependencies = { "stevearc/oil.nvim" },
-        opts = {},
+        opts = {
+            git_shell_cmd = {
+                "git",
+                "-c",
+                "status.relativePaths=false",
+                "status",
+                "--short",
+                "--untracked-files=all",
+                "--ignored", -- Enable showing ignored files
+            },
+        },
     },
 }

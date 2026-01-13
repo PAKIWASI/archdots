@@ -3,6 +3,7 @@ return {
     -- fzf-lua : snacks picker backend
     {
         "ibhagwan/fzf-lua",
+        event = "VeryLazy",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },
@@ -20,6 +21,7 @@ return {
     -- grug-far : search and replace (uses ripgrep)
     {
         "MagicDuck/grug-far.nvim",
+        event = "VeryLazy",
         opts = { headerMaxWidth = 80 },
         cmd = "GrugFar",
         keys = {
@@ -115,20 +117,19 @@ return {
     },
 
     -- todo-comment.nvim
-
     {
         "folke/todo-comments.nvim",
         cmd = { "TodoTrouble", "TodoTelescope" },
         event = "VeryLazy",
         opts = {},
         keys = {
-            { "]t",         function() require("todo-comments").jump_next() end,              desc = "Next Todo Comment" },
-            { "[t",         function() require("todo-comments").jump_prev() end,              desc = "Previous Todo Comment" },
+            { "]t",         function() require("todo-comments").jump_next() end, desc = "Next Todo Comment" },
+            { "[t",         function() require("todo-comments").jump_prev() end, desc = "Previous Todo Comment" },
             -- these 2 use plenary.nvim
             --{ "<leader>xt", "<cmd>Trouble todo toggle<cr>",                                   desc = "Todo (Trouble)" },
             --{ "<leader>xT", "<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
-            { "<leader>st", "<cmd>TodoFzfLua<cr>",                                            desc = "Todo" },
-            { "<leader>sT", "<cmd>TodoFzfLua keywords=TODO,FIX,FIXME<cr>",                    desc = "Todo/Fix/Fixme" },
+            { "<leader>st", "<cmd>TodoFzfLua<cr>",                               desc = "Todo" },
+            { "<leader>sT", "<cmd>TodoFzfLua keywords=TODO,FIX,FIXME<cr>",       desc = "Todo/Fix/Fixme" },
         },
     },
 
@@ -149,5 +150,42 @@ return {
             markdown = true,
         },
     },
-}
 
+    -- mini.move: Move lines/selections with Alt+hjkl
+    {
+        "echasnovski/mini.move",
+        event = "VeryLazy",
+        version = "*",
+        config = function()
+            require("mini.move").setup({
+                mappings = {
+                    left = "<A-h>",
+                    right = "<A-l>",
+                    down = "<A-j>",
+                    up = "<A-k>",
+                },
+            })
+        end,
+    },
+
+    -- mini.surround: Add/delete/change surroundings
+    -- BUG: how to use?
+    {
+        "echasnovski/mini.surround",
+        event = "VeryLazy",
+        version = "*",
+        config = function()
+            require("mini.surround").setup({
+                mappings = {
+                    add = "ys",
+                    delete = "ds",
+                    replace = "cs",
+                    find = "fS",
+                    find_left = "f[s",
+                    highlight = "gS",
+                    update_n_lines = "gN",
+                },
+            })
+        end,
+    },
+}

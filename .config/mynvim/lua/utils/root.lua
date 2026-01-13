@@ -17,6 +17,7 @@ local root_patterns = {
     "setup.py",
     -- Generic
     ".git",
+    ".gitignore",
 }
 
 function M.get(bufnr)

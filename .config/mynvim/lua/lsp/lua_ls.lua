@@ -3,25 +3,25 @@ return {
     cmd = { "lua-language-server" },
     settings = {
         Lua = {
-            runtime = { 
-                version = "LuaJIT" 
+            runtime = {
+                version = "LuaJIT"
             },
-            diagnostics = { 
-                globals = { "vim" } 
+            diagnostics = {
+                globals = { "vim" }
             },
-            workspace = { 
+            workspace = {
                 library = vim.api.nvim_get_runtime_file("", true),
-                checkThirdParty = false 
+                checkThirdParty = false
             },
-            telemetry = { 
-                enable = false 
+            telemetry = {
+                enable = false
             },
-            codeLens = { 
-                enable = false 
+            codeLens = {
+                enable = false
             },
-            hint = { 
-                enable = true, 
-                semicolon = "Disable" 
+            hint = {
+                enable = true,
+                semicolon = "Disable"
             },
         },
     },

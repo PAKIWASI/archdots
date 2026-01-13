@@ -31,13 +31,12 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 
 
--- terminal
---vim.keymap.set({'n', 'v'}, "<C-/>", function () Snacks.terminal() end, { desc = "Open Floating Terminal"})
---map("n", "<leader>fT", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
---map("n", "<leader>ft", function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = "Terminal (Root Dir)" })
---map({"n","t"}, "<c-/>",function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = "Terminal (Root Dir)" })
-
 -- Stay in visual mode after indenting
 vim.keymap.set('v', '<', '<gv', { desc = 'Indent left and reselect' })
 vim.keymap.set('v', '>', '>gv', { desc = 'Indent right and reselect' })
 
+
+-- image show
+vim.keymap.set("n", "<leader>bi", function()
+    require("snacks").image.hover()
+end, { desc = "Show image under cursor" })
