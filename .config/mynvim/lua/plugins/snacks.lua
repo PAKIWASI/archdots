@@ -89,7 +89,7 @@ return {
             "<leader>ft",
             function()
                 Snacks.terminal(nil, {
-                    cwd = vim.fn.getcwd(),
+                    cwd = vim.bo.getcwd(),
                     win = { style = "terminal", position = "float", backdrop = 60, border = "rounded", width = 0.5, height = 0.7 }
                 })
             end,

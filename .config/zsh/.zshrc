@@ -51,7 +51,7 @@ alias c='clear'
 alias zin='hydectl zoom --in --intensity'
 alias zout='hydectl zoom --out --intensity'
 alias zreset='hydectl zoom --reset' 
-alias mynvim='NVIM_APPNAME=mynvim nvim'
+alias m='NVIM_APPNAME=mynvim nvim'
 alias dots='/usr/bin/git --git-dir=$HOME/Documents/dotfiles/ --work-tree=$HOME'
 alias lazydots='lazygit --git-dir=$HOME/Documents/dotfiles --work-tree=$HOME'
 

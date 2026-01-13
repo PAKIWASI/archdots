@@ -98,7 +98,18 @@ return {
         config = function()
             -- Diagnostic configuration
             vim.diagnostic.config({
-                virtual_text = true,
+                --virtual_text = true,
+                virtual_text = {
+                    prefix = function(diagnostic)
+                        local icons = {
+                            [vim.diagnostic.severity.ERROR] = '✘',
+                            [vim.diagnostic.severity.WARN] = '●',
+                            [vim.diagnostic.severity.HINT] = '⚑',
+                            [vim.diagnostic.severity.INFO] = '»',
+                        }
+                        return icons[diagnostic.severity] or '●'
+                    end,
+                },
                 signs = true,
                 underline = true,
                 update_in_insert = false,
@@ -157,10 +168,10 @@ return {
 
                 -- Diagnostics with vim.diagnostic.jump
                 map('n', '<leader>cd', vim.diagnostic.open_float, 'Line Diagnostics')
-                map('n', ']d', function()
+                map('n', '<leader>cj', function()
                     vim.diagnostic.jump({ count = 1, float = true })
                 end, 'Next Diagnostic')
-                map('n', '[d', function()
+                map('n', '<leader>ck', function()
                     vim.diagnostic.jump({ count = -1, float = true })
                 end, 'Prev Diagnostic')
                 map('n', ']e', function()

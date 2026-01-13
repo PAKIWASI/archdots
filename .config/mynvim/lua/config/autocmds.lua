@@ -38,3 +38,6 @@ vim.api.nvim_create_autocmd("CmdlineLeave", {
     desc = "Hide command line after command mode",
 })
 
+
+
+

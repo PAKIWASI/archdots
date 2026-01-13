@@ -133,6 +133,21 @@ return {
         },
     },
 
+    -- color picker
+    {
+        "uga-rosa/ccc.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("ccc").setup({
+                highlighter = {
+                    auto_enable = true,
+                    lsp = true,
+                },
+            })
+            vim.keymap.set("n", "<leader>cp", "<cmd>CccPick<cr>", { desc = "Open Color Picker" })
+        end,
+    },
+
     -- mini pairs
     {
         "nvim-mini/mini.pairs",
