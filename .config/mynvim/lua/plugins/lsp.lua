@@ -197,7 +197,7 @@ return {
             -- Set default config for all servers
             vim.lsp.config('*', {
                 capabilities = capabilities,
-                float = {           -- TODO: doesnot border hover docs
+                float = {           -- BUG: doesnot border hover docs (that one guy on yt did it on options.lua)
                     border = 'rounded',
                 },
             })
@@ -258,6 +258,7 @@ return {
             -- Enable LSP servers (all from ensure_installed)
             vim.lsp.enable({
                 'lua_ls',
+                'clangd',    --mason = false
             })
         end,
     },

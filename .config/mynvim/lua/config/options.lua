@@ -6,7 +6,7 @@ vim.o.relativenumber = true
 vim.o.cursorline = true     -- show line highlight at curr line
 
 vim.o.termguicolors = true   -- Better colors in terminal
-vim.api.nvim_set_hl(0, "LineNr", { fg = "#aafe01" })          -- All line numbers TODO: not working
+vim.api.nvim_set_hl(0, "LineNr", { fg = "#aafe01" }) -- TODO: modify this
 
 
 vim.o.clipboard = "unnamedplus"

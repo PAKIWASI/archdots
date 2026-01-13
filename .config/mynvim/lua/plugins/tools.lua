@@ -156,36 +156,17 @@ return {
         "echasnovski/mini.move",
         event = "VeryLazy",
         version = "*",
-        config = function()
-            require("mini.move").setup({
-                mappings = {
-                    left = "<A-h>",
-                    right = "<A-l>",
-                    down = "<A-j>",
-                    up = "<A-k>",
-                },
-            })
-        end,
+        opts = {},
     },
 
+    --[[
     -- mini.surround: Add/delete/change surroundings
     -- BUG: how to use?
     {
         "echasnovski/mini.surround",
-        event = "VeryLazy",
         version = "*",
-        config = function()
-            require("mini.surround").setup({
-                mappings = {
-                    add = "ys",
-                    delete = "ds",
-                    replace = "cs",
-                    find = "fS",
-                    find_left = "f[s",
-                    highlight = "gS",
-                    update_n_lines = "gN",
-                },
-            })
-        end,
+        event = "VeryLazy",
+        opts = {},
     },
+    --]]
 }
