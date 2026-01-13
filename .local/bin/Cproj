@@ -1,0 +1,109 @@
+#!/usr/bin/zsh
+
+# C99 CMake Ninja Project Setup and Build Script
+
+set -e
+
+PROJECT_NAME="${1:-C99proj}"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+echo "${GREEN}Setting up C99 CMake Ninja project: ${PROJECT_NAME}${NC}"
+
+# Check dependencies
+echo "${YELLOW}Checking dependencies...${NC}"
+for cmd in cmake ninja clang; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "${RED}Error: $cmd is not installed${NC}"
+        echo "Install with: sudo pacman -S cmake ninja gcc"
+        exit 1
+    fi
+done
+
+# Create project directory
+echo "${YELLOW}Checking project directory...${NC}"
+if [[ -d "$PROJECT_NAME" ]]; then
+    echo "${RED}Error: Directory $PROJECT_NAME already exists${NC}"
+    exit 1
+fi
+
+mkdir "$PROJECT_NAME"
+cd "$PROJECT_NAME"
+
+# Create directory structure
+echo "${YELLOW}Creating directory structure...${NC}"
+mkdir -p src include build
+
+# Create CMakeLists.txt
+echo "${YELLOW}Creating CMakeLists.txt...${NC}"
+cat > CMakeLists.txt << EOF
+cmake_minimum_required(VERSION 3.20)
+project($PROJECT_NAME LANGUAGES C)
+
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+file(GLOB SRC_FILES "\${CMAKE_SOURCE_DIR}/src/*.c")
+#file(GLOB HEADER_FILES "\${CMAKE_SOURCE_DIR}/include/*.h")
+
+add_executable(main \${SRC_FILES}) #\${HEADER_FILES})
+
+target_include_directories(main PRIVATE \${CMAKE_SOURCE_DIR}/include)
+EOF
+
+# Create sample header
+echo "${YELLOW}Creating example files...${NC}"
+cat > include/example.h << 'EOF'
+#pragma once
+
+EOF
+
+# Create sample sources
+cat > src/main.c << 'EOF'
+#include <stdio.h>
+#include "example.h"
+
+int main(void) 
+{
+    printf("Hello from C99 CMake Ninja project!\n");
+
+    return 0;
+}
+EOF
+
+cat > .clangd << 'EOF'
+CompileFlags:
+  CompilationDatabase: build/
+  Add:
+    - "-std=c99"
+EOF
+
+cat > .gitignore << 'EOF'
+build/
+.cache
+EOF
+
+echo "${GREEN}✓ Project structure created${NC}"
+echo ""
+
+# Build the project
+echo "${YELLOW}Building project...${NC}"
+cmake -G Ninja -S . -B build/
+cd build
+ninja
+
+echo ""
+echo "${GREEN}✓ Build complete!${NC}"
+echo ""
+echo "${YELLOW}Running project...${NC}"
+./main
+echo "${GREEN}✓ Execution complete!${NC}"
+echo "Project created at: ${PWD:h}"
+
+
