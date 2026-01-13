@@ -24,12 +24,6 @@ return {
                         symbols = { added = ' ', modified = ' ', removed = ' ' },
                         colored = true,
                     },
-                    {
-                        'diagnostics',
-                        sources = { 'nvim_lsp', 'nvim_diagnostic' },
-                        symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
-                        colored = true,
-                    },
                 },
                 lualine_c = {
                     'filetype',
@@ -44,7 +38,27 @@ return {
                     }
                 },
                 lualine_x = {
+                    -- TODO: why doesnto work?
+                    --[[{
+                        require("utils.macro_recording"),
+                        separator = { left = '' },
+                        right_padding = 2,
+                    },--]]
                     require("utils.macro_recording"),
+                    {
+                        'diagnostics',
+                        sources = { 'nvim_diagnostic' }, -- modern source
+                        symbols = {
+                            error = ' ',
+                            warn  = ' ',
+                            info  = ' ',
+                            hint  = ' ',
+                        },
+                        colored = true,
+                        update_in_insert = false,
+                        separator = { right = '' },
+                        left_padding = 2,
+                    },
                 },
                 lualine_y = { 'progress' },
                 lualine_z = {

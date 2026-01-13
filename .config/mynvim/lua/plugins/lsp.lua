@@ -197,9 +197,6 @@ return {
             -- Set default config for all servers
             vim.lsp.config('*', {
                 capabilities = capabilities,
-                float = {           -- BUG: doesnot border hover docs (that one guy on yt did it on options.lua)
-                    border = 'rounded',
-                },
             })
 
             -- Load individual server configs from lsp/ directory
@@ -212,19 +209,37 @@ return {
                     while true do
                         local name, type = vim.loop.fs_scandir_next(handle)
                         if not name then break end
-
                         if type == 'file' and name:match('%.lua$') then
                             local server_name = name:gsub("%.lua$", "")
                             local ok, server_config = pcall(require, "lsp." .. server_name)
-
                             if ok then
                                 -- Get default config
                                 local default_config = vim.lsp.config[server_name] or {}
+
+                                -- get default on_attach
+                                local default_on_attach = default_config.on_attach
+
+                                -- Store server-specific on_attach separately
+                                local server_on_attach = server_config.on_attach
 
                                 -- Merge custom config with default config and capabilities
                                 local merged_config = vim.tbl_deep_extend('force', {
                                     capabilities = capabilities,
                                 }, default_config, server_config)
+
+                                -- Create combined on_attach if server has one
+                                if server_on_attach then
+                                    merged_config.on_attach = function(client, bufnr)
+                                        -- Call global on_attach first
+                                        on_attach(client, bufnr)
+                                        -- Call default on_attach
+                                        default_on_attach(client, bufnr)
+                                        -- Call server-specific on_attach
+                                        server_on_attach(client, bufnr)
+                                    end
+                                else
+                                    merged_config.on_attach = on_attach
+                                end
 
                                 -- Set the merged config
                                 vim.lsp.config[server_name] = merged_config
@@ -233,6 +248,7 @@ return {
                     end
                 end
             end
+
 
             -- Mason LSPConfig setup
             local mason_lspconfig = require('mason-lspconfig')
@@ -244,21 +260,11 @@ return {
                 },
             })
 
-            -- LspAttach autocmd for keybindings
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
-                callback = function(event)
-                    local client = vim.lsp.get_client_by_id(event.data.client_id)
-                    if client then
-                        on_attach(client, event.buf)
-                    end
-                end,
-            })
 
             -- Enable LSP servers (all from ensure_installed)
             vim.lsp.enable({
                 'lua_ls',
-                'clangd',    --mason = false
+                'clangd', --mason = false
             })
         end,
     },

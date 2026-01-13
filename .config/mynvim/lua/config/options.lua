@@ -6,7 +6,7 @@ vim.o.relativenumber = true
 vim.o.cursorline = true     -- show line highlight at curr line
 
 vim.o.termguicolors = true   -- Better colors in terminal
-vim.api.nvim_set_hl(0, "LineNr", { fg = "#aafe01" }) -- TODO: modify this
+--vim.api.nvim_set_hl(0, "LineNr", { fg = "#aafe01" }) -- TODO: modify this
 
 
 vim.o.clipboard = "unnamedplus"
@@ -16,6 +16,8 @@ vim.o.wrap = false
 vim.o.swapfile = false
 
 vim.o.mouse = ""            -- no mouse
+
+vim.o.winborder = "rounded"
 
 vim.o.ignorecase = true     -- while greping
 vim.o.smartcase = true      -- unless I type upper case
