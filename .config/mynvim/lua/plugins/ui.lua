@@ -89,10 +89,10 @@ return {
 
                 separator_style = "slope",
 
-                offsets = {
+                offsets = { -- TODO: more settings?
                     {
                         filetype = "oil",
-                        text = "File Explorer",
+                        text = "Oil",
                         highlight = "Directory",
                         text_align = "left",
                         separator = true,

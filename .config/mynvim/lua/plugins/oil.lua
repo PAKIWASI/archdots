@@ -1,4 +1,3 @@
-
 return {
 
     {
@@ -9,7 +8,7 @@ return {
         },
         opts = {
             default_file_explorer = true,
-            columns = { "git_status" ,"icon" },
+            columns = { "git_status", "icon" },
             view_options = {
                 show_hidden = true,
             },
@@ -49,13 +48,15 @@ return {
             },
         },
         keys = {
-            { "<leader>oo",
+            {
+                "<leader>oo",
                 function()
                     require("oil").open()
                 end,
                 desc = "Open cwd"
             },
-            { "<leader>oO",
+            {
+                "<leader>oO",
                 function()
                     local root = require("utils.root").get()
                     require("oil").open(root)
@@ -63,7 +64,7 @@ return {
                 desc = "Open parent directory"
             },
             { "<leader>of", "<cmd>Oil --float<cr>", desc = "Oil (float)" },
-            { "<leader>oq", "<cmd>bd<cr>", desc = "Close Oil" },
+            { "<leader>oq", "<cmd>bd<cr>",          desc = "Close Oil" },
             {
                 "<leader>E",
                 function()
@@ -77,7 +78,7 @@ return {
                     local root = require("utils.root").get()
                     vim.cmd("topleft vsplit")
                     vim.cmd("vertical resize 32")
-                    vim.cmd("Oil "..root)
+                    vim.cmd("Oil " .. root)
                     vim.cmd("wincmd p")
                 end,
                 desc = "Toggle Oil sidebar (Parent Dir)",
@@ -101,10 +102,15 @@ return {
             },
         },
     },
+    --[[
     {
-    "benomahony/oil-git.nvim",
-        dependencies = { "stevearc/oil.nvim" },
-        -- No opts or config needed! Works automatically
+        "malewicz1337/oil-git.nvim",
+        dependencies = { "stevearc/oil.nvim" }
     }
+    --]]
+    {
+        "FerretDetective/oil-git-signs.nvim",
+        dependencies = { "stevearc/oil.nvim" },
+        opts = {},
+    },
 }
-

@@ -6,9 +6,9 @@ return {
             require('mason').setup({
                 ui = {
                     icons = {
-                        package_installed = "✓",
-                        package_pending = "➜",
-                        package_uninstalled = "✗"
+                        package_installed = " ",
+                        package_pending = " ",
+                        package_uninstalled = " "
                     }
                 }
             })
@@ -64,8 +64,14 @@ return {
                     { name = 'path' },
                 }),
                 window = {
-                    completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
+                    completion = {
+                        border = 'rounded',
+                        winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None',
+                    },
+                    documentation = {
+                        border = 'rounded',
+                        winhighlight = 'Normal:Normal,FloatBorder:FloatBorder',
+                    },
                 },
                 formatting = {
                     format = function(entry, vim_item)
@@ -104,7 +110,7 @@ return {
             })
 
             -- Diagnostic signs
-            local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+            local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
             for type, icon in pairs(signs) do
                 local hl = "DiagnosticSign" .. type
                 vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -191,6 +197,9 @@ return {
             -- Set default config for all servers
             vim.lsp.config('*', {
                 capabilities = capabilities,
+                float = {           -- TODO: doesnot border hover docs
+                    border = 'rounded',
+                },
             })
 
             -- Load individual server configs from lsp/ directory
@@ -198,27 +207,27 @@ return {
 
             -- Check if directory exists
             if vim.fn.isdirectory(lsp_dir) == 1 then
-            local handle = vim.loop.fs_scandir(lsp_dir)
+                local handle = vim.loop.fs_scandir(lsp_dir)
                 if handle then
                     while true do
-                    local name, type = vim.loop.fs_scandir_next(handle)
-                    if not name then break end
+                        local name, type = vim.loop.fs_scandir_next(handle)
+                        if not name then break end
 
                         if type == 'file' and name:match('%.lua$') then
                             local server_name = name:gsub("%.lua$", "")
                             local ok, server_config = pcall(require, "lsp." .. server_name)
 
                             if ok then
-                            -- Get default config
-                            local default_config = vim.lsp.config[server_name] or {}
+                                -- Get default config
+                                local default_config = vim.lsp.config[server_name] or {}
 
-                            -- Merge custom config with default config and capabilities
-                            local merged_config = vim.tbl_deep_extend('force', {
-                                capabilities = capabilities,
-                            }, default_config, server_config)
+                                -- Merge custom config with default config and capabilities
+                                local merged_config = vim.tbl_deep_extend('force', {
+                                    capabilities = capabilities,
+                                }, default_config, server_config)
 
-                            -- Set the merged config
-                            vim.lsp.config[server_name] = merged_config
+                                -- Set the merged config
+                                vim.lsp.config[server_name] = merged_config
                             end
                         end
                     end
@@ -305,5 +314,3 @@ return {
         },
     },
 }
-
-
