@@ -1,9 +1,10 @@
+
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true    -- show line highlight at curr line
 
 vim.o.termguicolors = true -- Better colors in terminal
-vim.api.nvim_set_hl(0, "LineNr", { fg = "#4CE471"})
+--vim.api.nvim_set_hl(0, "LineNr", { fg = "#4CE471"})
 
 
 vim.o.clipboard = "unnamedplus"
@@ -57,3 +58,4 @@ vim.o.pumheight = 10                 -- Max 10 items in popup menu
 vim.o.cmdheight = 0     -- in favor of lualine (autocmd sets this when I press :)
 
 
+vim.filetype.add({ extension = { h = 'c' } })

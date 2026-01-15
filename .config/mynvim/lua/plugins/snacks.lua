@@ -5,13 +5,13 @@ return {
     keys = {
         -- Top Pickers & Explorer
         { "<leader><space>", function() Snacks.picker.smart() end,                                   desc = "Smart Find Files" },
-        { "<leader>,",       function() Snacks.picker.buffers() end,                                 desc = "Buffers" },
         { "<leader>/",       function() Snacks.picker.grep() end,                                    desc = "Grep" },
         { "<leader>:",       function() Snacks.picker.command_history() end,                         desc = "Command History" },
         -- find
         { "<leader>fb",      function() Snacks.picker.buffers() end,                                 desc = "Buffers" },
         { "<leader>fc",      function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
-        { "<leader>ff",      function() Snacks.picker.files() end,                                   desc = "Find Files" },
+        { "<leader>ff",      function() Snacks.picker.files({ cwd = require("utils.root").get()})end,desc = "Find Files (Root)" },
+        { "<leader>fF",      function() Snacks.picker.files({ cwd = "~"})end,                        desc = "Find Files (Home)" },
         { "<leader>fg",      function() Snacks.picker.git_files() end,                               desc = "Find Git Files" },
         { "<leader>fp",      function() Snacks.picker.projects() end,                                desc = "Projects" },
         { "<leader>fr",      function() Snacks.picker.recent() end,                                  desc = "Recent" },
@@ -72,7 +72,7 @@ return {
         --{ "<leader>uS",      function() Snacks.scratch.select() end,                                               desc = "Select Scratch Buffer" },
         { "<leader>un",      function() Snacks.picker.notifications() end,                           desc = "Notification History" },
         { "<leader>bd",      function() Snacks.bufdelete() end,                                      desc = "Delete Buffer" },
-        { "<leader>cR",      function() Snacks.rename.rename_file() end,                             desc = "Rename File" },
+        { "<leader>bR",      function() Snacks.rename.rename_file() end,                             desc = "Rename File" },
         { "<leader>gB",      function() Snacks.gitbrowse() end,                                      desc = "Git Browse",                 mode = { "n", "v" } },
         { "<leader>gg",      function() Snacks.lazygit() end,                                        desc = "Lazygit" },
         { "<leader>uN",      function() Snacks.notifier.hide() end,                                  desc = "Dismiss All Notifications" },
@@ -81,15 +81,27 @@ return {
         {
             "<leader>bt",
             function()
-                Snacks.terminal(nil, { win = { position = "bottom", height = 0.5 } })
+                Snacks.terminal(nil, {
+                    cwd = vim.fn.expand('%:p:h'),  -- Directory of current file
+                    win = { position = "bottom", height = 0.5 } })
             end,
-            desc = "Terminal (bottom)"
+            desc = "Terminal (bottom) cwd"
+        },
+        {
+            "<leader>bT",
+            function()
+                Snacks.terminal(nil, {
+                    cwd = require("utils.root").get(),
+                    win = { position = "bottom", height = 0.5 }
+            })
+            end,
+            desc = "Terminal (bottom) root"
         },
         {
             "<leader>ft",
             function()
                 Snacks.terminal(nil, {
-                    cwd = vim.bo.getcwd(),
+                    cwd = vim.fn.expand('%:p:h'),  -- Directory of current file
                     win = { style = "terminal", position = "float", backdrop = 60, border = "rounded", width = 0.5, height = 0.7 }
                 })
             end,

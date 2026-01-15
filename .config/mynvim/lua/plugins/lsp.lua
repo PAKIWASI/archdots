@@ -5,6 +5,7 @@ return {
         config = function()
             require('mason').setup({
                 ui = {
+                    border = "rounded",
                     icons = {
                         package_installed = " ",
                         package_pending = " ",
@@ -144,8 +145,7 @@ return {
                 map('n', 'gD', vim.lsp.buf.declaration, 'Goto Declaration')
 
                 map('n', 'K', vim.lsp.buf.hover, 'Hover')
-                map('n', 'gK', vim.lsp.buf.signature_help, 'Signature Help')
-                map('i', '<C-k>', vim.lsp.buf.signature_help, 'Signature Help')
+                map({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, 'Signature Help')
 
                 -- Code actions
                 map({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, 'Code Action')
@@ -204,6 +204,7 @@ return {
                     })
                 end
             end
+
 
             -- Set default config for all servers
             vim.lsp.config('*', {
@@ -268,6 +269,11 @@ return {
             mason_lspconfig.setup({
                 ensure_installed = {
                     'lua_ls',
+                    'pyright',
+                    'ts_ls',
+                    --'codelldb', -- only via mason
+                    --'html',
+                    --'cssls',
                 },
             })
 
@@ -276,8 +282,25 @@ return {
             vim.lsp.enable({
                 'lua_ls',
                 'clangd', --mason = false
+                'pyright',
+                'ts_ls',
             })
         end,
+    },
+
+    -- nvim-dap : debugger ui
+    {
+        "mfussenegger/nvim-dap",
+        dependencies = {
+            "williamboman/mason.nvim",
+        },
+        config = function()
+            require("dap.codelldb")
+        end,
+    },
+    {
+        "theHamsta/nvim-dap-virtual-text",
+        dependencies = { "mfussenegger/nvim-dap" },
     },
 
     -- Trouble for better diagnostics UI

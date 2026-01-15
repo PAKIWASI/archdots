@@ -1,10 +1,7 @@
 
-
-
-
 -- indent width 2 for html, css
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = {"html", "css"},
+    pattern = { "html", "css" },
     callback = function()
         vim.bo.tabstop = 2
         vim.bo.shiftwidth = 2
@@ -16,7 +13,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
-    callback = function ()
+    callback = function()
         vim.highlight.on_yank()
     end,
     desc = "Highlight on Yank",
@@ -39,5 +36,13 @@ vim.api.nvim_create_autocmd("CmdlineLeave", {
 })
 
 
-
+-- TODO: doesnot work ?
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = 'h',
+    callback = function()
+        vim.cmd("setfiletype c")
+        vim.bo.filetype = 'c'
+    end,
+    desc = "Treat .h as C files",
+})
 
