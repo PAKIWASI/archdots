@@ -288,21 +288,6 @@ return {
         end,
     },
 
-    -- nvim-dap : debugger ui
-    {
-        "mfussenegger/nvim-dap",
-        dependencies = {
-            "williamboman/mason.nvim",
-        },
-        config = function()
-            require("dap.codelldb")
-        end,
-    },
-    {
-        "theHamsta/nvim-dap-virtual-text",
-        dependencies = { "mfussenegger/nvim-dap" },
-    },
-
     -- Trouble for better diagnostics UI
     {
         'folke/trouble.nvim',
@@ -355,3 +340,6 @@ return {
         },
     },
 }
+
+
+

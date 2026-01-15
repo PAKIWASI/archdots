@@ -13,7 +13,7 @@ vim.o.wrap = false
 
 vim.o.swapfile = false
 
-vim.o.mouse = "" -- no mouse
+vim.o.mouse = "nv" -- for nvim-dap
 
 vim.o.winborder = "rounded"
 

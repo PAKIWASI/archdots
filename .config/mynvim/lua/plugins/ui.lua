@@ -1,5 +1,6 @@
 return {
 
+    -- TODO: how to disable lualine for dap ui windows?
     -- statusline (lua line)
     {
         'nvim-lualine/lualine.nvim',

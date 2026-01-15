@@ -79,6 +79,24 @@ CompileFlags:
   CompilationDatabase: build/
   Add:
     - "-std=c++20"
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - bugprone-*
+      - cert-*
+      - clang-analyzer-*
+      - cppcoreguidelines-*
+      - modernize-*
+      - performance-*
+      - portability-*
+      - readability-*
+    Remove:
+      - readability-magic-numbers
+      - readability-identifier-length
+      - readability-function-cognitive-complexity
+      - bugprone-easily-swappable-parameters
+      - cppcoreguidelines-avoid-magic-numbers
 EOF
 
 

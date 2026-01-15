@@ -85,7 +85,27 @@ cat > .clangd << 'EOF'
 CompileFlags:
   CompilationDatabase: build/
   Add:
-    - "-std=c99"
+    - -std=c99
+    - -Wstrict-prototypes
+    - -Wconversion  # can be noisy
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - bugprone-*
+      - cert-*
+      - clang-analyzer-*
+      - performance-*
+      - portability-*
+      - readability-*
+    Remove:
+      # Too noisy
+      - readability-magic-numbers
+      - readability-identifier-length
+      - readability-function-cognitive-complexity
+      - bugprone-easily-swappable-parameters
+      - cert-err33-c
+      - readability-identifier-naming
 EOF
 
 
