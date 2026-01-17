@@ -100,3 +100,4 @@ symlink_path: { foreground: "#89ddff" }
 control_char: { foreground: "#ff966c" }
 broken_symlink: { foreground: "#ff007c" }
 broken_path_overlay: { foreground: "#ff007c" }
+
