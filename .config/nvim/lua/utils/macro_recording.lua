@@ -1,4 +1,6 @@
 
+-- macro icon for lualine
+
 
 local M = {
     function()

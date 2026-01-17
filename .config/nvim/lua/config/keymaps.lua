@@ -5,9 +5,10 @@
 -- commom write/quit
 vim.keymap.set( {'n','v'},     '<leader>q',  '<cmd>q<CR>',  { desc = 'Quit Buffer'   } )
 vim.keymap.set( {'n','v'},     '<leader>qq', '<cmd>q!<CR>', { desc = 'Force Quit'    } )
+-- TODO: why does cursor fliker?
 vim.keymap.set( {'n','v','i'}, '<C-s>', function ()
         if vim.bo.modified then
-            vim.cmd("write")
+            vim.cmd("write")        -- probably cause of this
         end
     end,
     { desc = 'Write Changes' }

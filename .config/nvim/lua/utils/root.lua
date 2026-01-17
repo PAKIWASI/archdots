@@ -1,3 +1,6 @@
+
+-- util to find root of a project iNTELIGENTLY. Prefers LSP, then patterns
+
 local M = {}
 
 -- Root markers 

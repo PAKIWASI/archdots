@@ -1,6 +1,5 @@
 return {
 
-    -- TODO: how to disable lualine for dap ui windows?
     -- statusline (lua line)
     {
         'nvim-lualine/lualine.nvim',
@@ -13,6 +12,8 @@ return {
                 -- disable for nvim-dap windows
                 disabled_filetypes = {
                     statusline = {
+                        "snacks_dashboard",
+                        "oil",
                         "dap-repl",
                         "dapui_scopes",
                         "dapui_breakpoints",
@@ -21,6 +22,8 @@ return {
                         "dapui_console",
                     },
                     winbar = {
+                        "snacks_dashboard",
+                        "oil",
                         "dap-repl",
                         "dapui_scopes",
                         "dapui_breakpoints",

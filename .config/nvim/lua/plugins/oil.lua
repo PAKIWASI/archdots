@@ -63,9 +63,17 @@ return {
                 end,
                 desc = "Open parent directory"
             },
-            { "<leader>of", "<cmd>Oil --float<cr>", desc = "Oil (float)" },
+            { "<leader>of", "<cmd>Oil --float<cr>", desc = "Oil (float) (cwd)" },
+            {
+                "<leader>oF",
+                function()      -- TODO: how to fix ?
+                    local root = require("utils.root").get()
+                    require("oil").open(root .. "float")
+                end,
+                desc = "Oil (float) (Root)"
+            },
             { "<leader>oq", "<cmd>bd<cr>",          desc = "Close Oil" },
-            { "<leader>ow", "<cmd>w<cr>",          desc = "Write Changes" },
+            { "<leader>ow", "<cmd>w<cr>",           desc = "Write Changes" },
             {
                 "<leader>E",
                 function()
